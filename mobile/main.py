@@ -1,4 +1,3 @@
-from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager
 from screens.feeding_screen import FeedingScreen
 from main_screen import MainPage
@@ -10,8 +9,9 @@ from screens.other_expenses_screen import OtherExpensesScreen
 from screens.perished_screen import PerishedScreen
 from screens.data_screen import DataScreen
 from data.storage import Storage
+from kivymd.app import MDApp
 
-class MyApp(App):
+class MyApp(MDApp):
     def build(self):
         self.storage = Storage()
         

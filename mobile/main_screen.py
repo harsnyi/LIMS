@@ -4,29 +4,38 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
-from kivy.graphics import Color, Rectangle
 
 class MainPage(Screen):
     def __init__(self, storage, **kwargs):
         super().__init__(**kwargs)
         self.storage = storage
-        
+
         # Create a ScrollView to enable scrolling
-        scroll_view = ScrollView(size_hint=(1, 1))
+        self.scroll_view = ScrollView(size_hint=(1, 1))
 
         # BoxLayout inside the ScrollView
-        layout = BoxLayout(orientation='vertical', padding=40, spacing=20, size_hint_y=None)
-        layout.bind(minimum_height=layout.setter('height'))  # Bind height to content height
+        self.layout = BoxLayout(orientation='vertical', padding=40, spacing=20, size_hint_y=None)
+        self.layout.bind(minimum_height=self.layout.setter('height'))  # Bind height to content height
 
         # Create a label at the top
-        label = Label(
+        self.title_label = Label(
             text="LIMS",
             size_hint=(None, None),
             size=(100, 50),
             pos_hint={'center_x': 0.5},
-            color=(1, 1, 1, 1)
+            color=(0, 0, 0, 1)
         )
-        layout.add_widget(label)
+        self.layout.add_widget(self.title_label)
+
+        # Create stock label; initialize it here
+        self.stock_label = Label(
+            text="Állomány: 0",  # Initialize with a default value
+            size_hint=(None, None),
+            size=(100, 50),
+            color=(0, 0, 0, 1),
+            padding=(60, 0, 0, 0)
+        )
+        self.layout.add_widget(self.stock_label)
 
         # Define button labels and the functions to call
         names = {
@@ -53,13 +62,16 @@ class MainPage(Screen):
                 background_down='',
             )
             button.bind(on_press=value)
-            layout.add_widget(button)
+            self.layout.add_widget(button)
 
-        # Add the layout inside the ScrollView
-        scroll_view.add_widget(layout)
+        self.scroll_view.add_widget(self.layout)
 
-        # Add the ScrollView to the screen
-        self.add_widget(scroll_view)
+        self.add_widget(self.scroll_view)
+
+    def on_enter(self):
+        # Update the stock value every time the screen is entered
+        stock = self.storage.data.get('stock')["count"] if self.storage.data.exists('stock') else 0
+        self.stock_label.text = f"Állomány: {stock}"
 
     # Screen transition methods
     def jump_to_feeding_screen(self, instance):
