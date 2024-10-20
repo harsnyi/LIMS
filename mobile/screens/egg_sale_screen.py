@@ -69,7 +69,6 @@ class EggSaleScreen(Screen):
             color=(0, 0, 0, 1),
             halign="left",
             valign="middle",
-            
         )
         layout.add_widget(label)
         self.date_button = Button(
