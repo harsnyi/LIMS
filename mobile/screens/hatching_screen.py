@@ -6,12 +6,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.pickers import MDDatePicker
 from data.storage import Storage
+from data.counter import Counter
 from datetime import datetime
 
 class HatchingScreen(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
+        self.counter: Counter = counter
         self.hatched_animals = 0
         self.selected_date = datetime.today().strftime("%Y-%m-%d")
 
@@ -108,7 +110,7 @@ class HatchingScreen(Screen):
     
 
     def save_hatched(self, instance):
-        try:
+        # try:
             quantity = int(self.count_input.text)
             date = self.selected_date
             if quantity and date and quantity != 0:
@@ -120,7 +122,7 @@ class HatchingScreen(Screen):
                     item = quantity
                 
                 self.storage.add_item(date, "hatched", item)
-                self.storage.modify_stock(quantity)
+                self.counter.modify_stock(quantity)
                 self.manager.current = 'main'
-        except Exception as e:
-            print(f"Hiba adódott a mentéskor: {e}")
+        # except Exception as e:
+        #     print(f"Hiba adódott a mentéskor: {e}")

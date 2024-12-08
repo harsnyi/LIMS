@@ -6,9 +6,10 @@ from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 
 class MainPage(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage = storage
+        self.counter = counter
 
         # Create a ScrollView to enable scrolling
         self.scroll_view = ScrollView(size_hint=(1, 1))
@@ -70,7 +71,7 @@ class MainPage(Screen):
 
     def on_enter(self):
         # Update the stock value every time the screen is entered
-        stock = self.storage.data.get('stock')["count"] if self.storage.data.exists('stock') else 0
+        stock = self.counter.count.get('count')["data"] if self.counter.count.exists('count') else 0
         self.stock_label.text = f"Állomány: {stock}"
 
     # Screen transition methods

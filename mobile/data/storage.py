@@ -19,16 +19,5 @@ class Storage():
         
         return False
     
-    def modify_stock(self, n):
-        if self.data.exists("stock"):
-            new = int(self.data["stock"]["count"]) + n
-            if new >= 0:
-                self.data.put("stock", count=new)
-            else:
-                self.data.put("stock", count=0)
-        else:
-            if n >= 0:
-                self.data.put("stock", count=n)
-
     def list(self):
         pass

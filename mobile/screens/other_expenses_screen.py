@@ -5,7 +5,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 
 class OtherExpensesScreen(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage = storage
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)

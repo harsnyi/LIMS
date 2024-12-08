@@ -9,7 +9,7 @@ from data.storage import Storage
 from datetime import datetime
 
 class ConsumeScreen(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
         self.consumed_animals = 0

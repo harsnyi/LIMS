@@ -9,7 +9,7 @@ import requests
 import json
 
 class DataScreen(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage = storage
         self.layout = BoxLayout(orientation='vertical', padding=40, spacing=20)

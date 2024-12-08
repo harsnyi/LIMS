@@ -6,12 +6,14 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.pickers import MDDatePicker
 from data.storage import Storage
+from data.counter import Counter
 from datetime import datetime
 
 class PerishedScreen(Screen):
-    def __init__(self, storage, **kwargs):
+    def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
+        self.counter: Counter = counter
         self.perished_animals = 0
         self.selected_date = datetime.today().strftime("%Y-%m-%d")
 
@@ -119,7 +121,7 @@ class PerishedScreen(Screen):
                     item = quantity
                 
                 self.storage.add_item(date, "perished", item)
-                self.storage.modify_stock(-1 * quantity)
+                self.counter.modify_stock(-1 * quantity)
                 self.manager.current = 'main'
         # except Exception as e:
         #     print(f"Hiba adódott a mentéskor: {e}")
