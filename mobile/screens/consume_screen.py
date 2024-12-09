@@ -6,12 +6,15 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.pickers import MDDatePicker
 from data.storage import Storage
+from data.info import Information
 from datetime import datetime
+from kivy.clock import Clock
 
 class ConsumeScreen(Screen):
-    def __init__(self, storage, counter, **kwargs):
+    def __init__(self, storage, info, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
+        self.info: Information = info
         self.consumed_animals = 0
         self.selected_date = datetime.today().strftime("%Y-%m-%d")
 
@@ -112,13 +115,35 @@ class ConsumeScreen(Screen):
             quantity = int(self.count_input.text)
             date = self.selected_date
             if quantity and date and quantity != 0:
-                if self.storage.data.exists(date) and "consumed" in self.storage.data[date]:
-                    new = int(self.storage.data[date]["consumed"]) + quantity
-                    self.storage.data.put(date, consumed=new)    
+                item = 0
+                if self.storage.already_exists(date, "consumed"):
+                    new = int(self.storage.data[date]["data"]["consumed"]) + quantity
+                    item = new
                 else:
-                    self.storage.data.put(date, consumed=quantity)
-                    
-                self.storage.modify_stock(-1 * quantity)
-                self.manager.current = 'main'
+                    item = quantity
+                
+                self.storage.add_item(date, "consumed", item)
+                self.info.modify_stock(-1 * quantity)
+                self.display_message("Saját felhasználás sikeresen mentve!", success=True)
+                Clock.schedule_once(lambda dt: self.go_to_main_page(None), 1)
+                
         except Exception as e:
             print(f"Hiba adódott a mentéskor: {e}")
+            self.display_message(f"Hiba: {str(e)}", success=False)
+
+    def display_message(self, message, success=False):
+        color = (0, 0.7, 0, 1) if success else (0.7, 0, 0, 1)
+
+        if not hasattr(self, 'message_label'):
+            self.message_label = Label(
+                text="",
+                size_hint=(1, None),
+                height=50,
+                color=color,
+                halign="left",
+                valign="middle",
+            )
+            self.children[0].children[0].add_widget(self.message_label, index=0)
+
+        self.message_label.text = message
+        self.message_label.color = color

@@ -4,13 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <title>Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Vezérlőpult</title>
 </head>
 <body>
-    <div class="grid-container">
-        {% for i in grid_items %}
-        <div class="grid-item">{{ i }}</div>
-        {% endfor %}
+    <div class="wrapper">
+        <div class="one">
+            <div id="plotly-div" class="grid-item plotly-item"></div>
+        </div>
+        <div class="two">Two</div>
+        <div class="three">Three</div>
+        <div class="four">Four</div>
+        <div class="five">Five</div>
+        <div class="six">Six</div>
     </div>
+
+    <script>
+        const plotlyFigure = {{ plotly_figure|safe }};
+        Plotly.newPlot('plotly-div', plotlyFigure.data, plotlyFigure.layout);
+    </script>
 </body>
 </html>

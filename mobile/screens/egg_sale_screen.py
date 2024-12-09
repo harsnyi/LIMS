@@ -7,6 +7,7 @@ from kivy.uix.scrollview import ScrollView
 from kivymd.uix.pickers import MDDatePicker
 from data.storage import Storage
 from datetime import datetime
+from kivy.clock import Clock
 
 class EggSaleScreen(Screen):
     def __init__(self, storage, counter, **kwargs):
@@ -123,7 +124,7 @@ class EggSaleScreen(Screen):
         self.manager.current = 'main'
     
     def save_egg_sale(self, instance):
-        # try:
+        try:
             quantity = int(self.count_input.text)
             price = int(self.price_input.text)
             date = self.selected_date
@@ -138,6 +139,27 @@ class EggSaleScreen(Screen):
                     item = {"quantity":quantity, "price":price}
                     
                 self.storage.add_item(date, "saled_eggs", item)
-                self.manager.current = 'main'
-        # except Exception as e:
-        #     print(f"Hiba adódott a mentéskor: {e}")
+                
+                self.display_message("Tojás eladás sikeresen mentve!", success=True)
+                Clock.schedule_once(lambda dt: self.go_to_main_page(None), 1)
+                
+        except Exception as e:
+            print(f"Hiba adódott a mentéskor: {e}")
+            self.display_message(f"Hiba: {str(e)}", success=False)
+    
+    def display_message(self, message, success=False):
+        color = (0, 0.7, 0, 1) if success else (0.7, 0, 0, 1)
+
+        if not hasattr(self, 'message_label'):
+            self.message_label = Label(
+                text="",
+                size_hint=(1, None),
+                height=50,
+                color=color,
+                halign="left",
+                valign="middle",
+            )
+            self.children[0].children[0].add_widget(self.message_label, index=0)
+
+        self.message_label.text = message
+        self.message_label.color = color
