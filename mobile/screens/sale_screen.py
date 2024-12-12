@@ -155,19 +155,13 @@ class SaleScreen(Screen):
             kilogram = float(self.kilo_input.text)
             date = self.selected_date
             if quantity and price and date and kilogram and quantity != 0 and kilogram != 0 and price != 0:
-                
-                self.counter.check_stock(quantity)
-                item = {}
-                if self.storage.already_exists(date, "sales"):
-                    new_quantity = int(self.storage.data[date]["data"]["sales"]["quantity"]) + quantity
-                    new_price = int(self.storage.data[date]["data"]["sales"]["price"]) + price
-                    new_kilo = int(self.storage.data[date]["data"]["sales"]["kilogram"]) + kilogram
+                self.info.check_stock(quantity)
+                item = {"date":date,
+                        "quantity":quantity,
+                        "price":price,
+                        "kilograms": kilogram}
                     
-                    item = {"quantity":new_quantity, "price":new_price, "kilogram": new_kilo}
-                else:
-                    item = {"quantity":quantity, "price":price, "kilogram": kilogram}
-                    
-                self.storage.add_item(date, "sales", item)
+                self.storage.add_item(self.storage.generate_short_id(), "sales", item)
                 self.info.modify_stock(-1 * quantity)
                 
                 self.display_message("Eladás sikeresen mentve!", success=True)

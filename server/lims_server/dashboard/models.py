@@ -109,7 +109,7 @@ class OtherExpenses(models.Model):
         (5, 'Takarmányszén'),
     ]
 
-    other_expense = models.PositiveSmallIntegerField(
+    expense_type = models.PositiveSmallIntegerField(
         choices=EXPENSE_CHOICES
     )
     date = models.DateField()
@@ -125,14 +125,14 @@ class OtherExpenses(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return f"{self.get_other_expense_display()} on {self.date}: {self.price} Ft"
+        return f"{self.get_expense_type_display()} on {self.date}: {self.price} Ft"
 
 
 class Sales(models.Model):
     date = models.DateField()
     quantity = models.PositiveIntegerField()
     price = models.BigIntegerField()
-    kilograms = models.BigIntegerField()
+    kilograms = models.FloatField()
 
     created_at = models.DateTimeField(
         auto_now_add=True

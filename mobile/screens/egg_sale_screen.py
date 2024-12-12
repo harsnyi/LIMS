@@ -6,13 +6,15 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.pickers import MDDatePicker
 from data.storage import Storage
+from data.info import Information
 from datetime import datetime
 from kivy.clock import Clock
 
 class EggSaleScreen(Screen):
-    def __init__(self, storage, counter, **kwargs):
+    def __init__(self, storage, info, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
+        self.info: Information = info
         self.selected_date = datetime.today().strftime("%Y-%m-%d")
 
         layout = BoxLayout(orientation='vertical', padding=40, spacing=20, size_hint_y=None)
@@ -129,16 +131,11 @@ class EggSaleScreen(Screen):
             price = int(self.price_input.text)
             date = self.selected_date
             if quantity and price and date and quantity != 0:
-                item = {}
-                if self.storage.already_exists(date, "saled_eggs"):
-                    new_quantity = int(self.storage.data[date]["data"]["saled_eggs"]["quantity"]) + quantity
-                    new_price = int(self.storage.data[date]["data"]["saled_eggs"]["price"]) + price
+                item = {"date": date,
+                        "quantity":quantity,
+                        "price":price}
                     
-                    item = {"quantity":new_quantity, "price":new_price}
-                else:
-                    item = {"quantity":quantity, "price":price}
-                    
-                self.storage.add_item(date, "saled_eggs", item)
+                self.storage.add_item(self.storage.generate_short_id(), "saled_eggs", item)
                 
                 self.display_message("Tojás eladás sikeresen mentve!", success=True)
                 Clock.schedule_once(lambda dt: self.go_to_main_page(None), 1)

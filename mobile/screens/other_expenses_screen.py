@@ -138,12 +138,21 @@ class OtherExpensesScreen(Screen):
             item = {}
             price = int(self.price_input.text)
             expense_type = self.selected_expense
+            
+            if expense_type == "gyógyszer":
+                expense_type = "gyogyszer"
+            elif expense_type == "szelidgesztenye por":
+                expense_type = "szelidgesztenye_por"
+            elif expense_type == "takarmányszén":
+                expense_type = "takarmanyszen"
+
             date = self.selected_date
             if expense_type and price and date:
-                if self.storage.already_exists(date, "saled_eggs"):
-                    pass
-                item = {"price":price, "expense_type":expense_type}
-                self.storage.add_item(date, "other_expenses", item)
+                item = {"date": date,
+                        "price":price,
+                        "expense_type":expense_type}
+                
+                self.storage.add_item(self.storage.generate_short_id(), "other_expenses", item)
                 self.display_message("Egyéb kiadás sikeresen mentve!", success=True)
                 Clock.schedule_once(lambda dt: self.go_to_main_page(None), 1)
             else:

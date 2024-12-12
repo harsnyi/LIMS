@@ -2,47 +2,110 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-import datetime
 import plotly.graph_objects as go
 from plotly.io import to_json
-from .models import HatchData, DeathRecord
+from django.db import transaction
+
+from .models import (
+    FeedData,
+    Sales,
+    HatchData,
+    DeathRecord,
+    OtherExpenses,
+    ConsumeRecord,
+    EggSale
+)
+def get_expense_type(value):
+    value = value.lower()
+    if value == "vitamin":
+        return 1
+    elif value == "gyogyszer":
+        return 2
+    elif value == "premix":
+        return 3
+    elif value == "szelidgesztenye_por":
+        return 4
+    elif value == "takarmanyszen":
+        return 5
+    
+MODEL_MAPPING = {
+    "feed_data": {
+        "model": FeedData,
+        "fields": ["date", "quantity", "total_price", "food_type"],
+        "transforms": {
+            "food_type": lambda value: 1 if value.lower() == "grain" else 2
+        }
+    },
+    "other_expenses": {
+        "model": OtherExpenses,
+        "fields": ["date", "expense_type", "price"],
+        "transforms": {
+            "expense_type": get_expense_type
+        }
+    },
+    "hatched": {
+        "model": HatchData,
+        "fields": ["date", "quantity"]
+    },
+    "consumed": {
+        "model": ConsumeRecord,
+        "fields": ["date", "quantity"]
+    },
+    "sales": {
+        "model": Sales,
+        "fields": ["date", "quantity", "price", "kilograms"]
+    },
+    "saled_eggs": {
+        "model": EggSale,
+        "fields": ["date", "quantity", "price"]
+    },
+    "perished": {
+        "model": DeathRecord,
+        "fields": ["date", "quantity"]
+    },
+}
 
 @csrf_exempt
 def upload_data(request):
     if request.method == 'POST':
-        try:
-            # Parse the JSON body
+        #try:
             body = json.loads(request.body)
 
-            # Loop through each date in the JSON
-            for date_str, values in body.items():
-                # Convert date string to a date object
-                date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+            # Begin a transaction to ensure atomicity
+            with transaction.atomic():
+                for item_id, content in body.items():
+                    data_dict = content.get("data")
+                    
+                    if not data_dict:
+                        continue
 
-                # Extract data for hatched and perished (if available)
-                hatched = values["data"].get("hatched")
-                perished = values["data"].get("perished")
+                    for key, values in data_dict.items():
+                        model_info = MODEL_MAPPING.get(key)
+                        
+                        if not model_info:
+                            continue
 
-                # Save hatched data if it exists
-                if hatched is not None:
-                    HatchData.objects.create(
-                        quantity=hatched,
-                        date=date
-                    )
+                        model_class = model_info["model"]
+                        fields = model_info["fields"]
+                        transforms = model_info.get("transforms", {})
 
-                # Save perished data if it exists
-                if perished is not None:
-                    DeathRecord.objects.create(
-                        quantity=perished,
-                        date=date
-                    )
+                        data = {}
+                        for field in fields:
+                            value = values.get(field)
+                            # Apply transformation if specified
+                            if field in transforms:
+                                value = transforms[field](value)
+                            data[field] = value
+                        
+                        model_class.objects.create(**data)
 
             return JsonResponse({"message": "Data saved successfully!"}, status=201)
 
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
+        #except Exception as e:
+        #    return JsonResponse({"error": str(e)}, status=400)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 
 def dashboard_view(request):

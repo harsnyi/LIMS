@@ -115,14 +115,10 @@ class HatchingScreen(Screen):
             quantity = int(self.count_input.text)
             date = self.selected_date
             if quantity and date and quantity != 0:
-                item = 0
-                if self.storage.already_exists(date, "hatched"):
-                    new = int(self.storage.data[date]["data"]["hatched"]) + quantity
-                    item = new
-                else:
-                    item = quantity
+                item = {"date":date,
+                        "quantity":quantity}
                 
-                self.storage.add_item(date, "hatched", item)
+                self.storage.add_item(self.storage.generate_short_id(), "hatched", item)
                 self.info.modify_stock(quantity)
                 self.display_message("Keltetés sikeresen mentve!", success=True)
                 Clock.schedule_once(lambda dt: self.go_to_main_page(None), 1)

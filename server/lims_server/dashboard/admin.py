@@ -33,8 +33,8 @@ class HatchDataAdmin(admin.ModelAdmin):
 
 @admin.register(OtherExpenses)
 class OtherExpensesAdmin(admin.ModelAdmin):
-    list_display = ('date', 'get_other_expense_display', 'price', 'created_at', 'updated_at')
-    list_filter = ('date', 'other_expense')
+    list_display = ('date', 'get_expense_type_display', 'price', 'created_at', 'updated_at')
+    list_filter = ('date', 'expense_type')
     search_fields = ('price',)
 
 @admin.register(Sales)

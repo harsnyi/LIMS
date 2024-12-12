@@ -18,11 +18,15 @@ class Information:
                 self.info.put("count", data=n)
     
     def check_stock(self, n):
+        error_message = "Nem létezik állomány, kérlek először hozz létre állományt!"
         if self.info.exists("count"):
             existing = self.info["count"].get("data", 0)
             if n > existing:
-                raise Exception("Nagyobb a megadott érték mint az állományban lévő állatok száma!")
-    
+                error_message = "Nagyobb a megadott érték mint az állományban lévő állatok száma!"
+                raise Exception(error_message)
+        else:
+            raise Exception(error_message)
+        
     def get_grain_nutrition_price(self) -> tuple:
         if self.info.exists("prices"):
             grain_price = self.info["prices"]["data"].get("grain_price", np.nan)

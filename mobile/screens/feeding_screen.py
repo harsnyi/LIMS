@@ -184,16 +184,10 @@ class FeedingScreen(Screen):
                     food_type = "Nutrition"
                     price = 12 * nutrition_price * quantity
 
-                # if self.storage.already_exists(date, "feeding"):
-                #     new_quantity = int(self.storage.data[date]["data"]["feeding"]["quantity"]) + quantity
-                #     new_price = int(self.storage.data[date]["data"]["feeding"]["price"]) + price
-                    
-                #     item = {"quantity":new_quantity, "price":new_price}
-                # Saving logic
                 item = {
                     "date": date,
                     "quantity": quantity,
-                    "price": price,
+                    "total_price": price,
                     "food_type": food_type
                 }
                 self.storage.add_item(self.storage.generate_short_id(), "feed_data", item)

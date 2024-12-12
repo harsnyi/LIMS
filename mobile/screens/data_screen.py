@@ -4,14 +4,14 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
+from data.storage import Storage
 import requests
 import json
 
 class DataScreen(Screen):
     def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
-        self.storage = storage
+        self.storage: Storage = storage
         self.layout = BoxLayout(orientation='vertical', padding=40, spacing=20)
 
         label = Label(
@@ -66,15 +66,11 @@ class DataScreen(Screen):
 
     def send_data(self, instance):
         # Define your API endpoint
-        url = "http://localhost:8000/dashboard/update"
+        url = "http://localhost:8000/dashboard/upload_data"
         
-        # Example data to send (you can collect this from user input, etc.)
-        data = {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "message": "Hello from Kivy!"
-        }
-
+        
+        data = self.storage.data._data
+        print(data)
         # Send POST request
         try:
             response = requests.post(url, data=json.dumps(data), headers={'Content-Type': 'application/json'})
