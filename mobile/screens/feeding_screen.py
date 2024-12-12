@@ -17,7 +17,7 @@ class FeedingScreen(Screen):
         self.storage = storage
         self.info: Information = info
         self.selected_date = datetime.today().strftime("%Y-%m-%d")
-        self.grain_price, self.nutrition_price = self.info.get_grain_nutrition_price
+        self.grain_price, self.nutrition_price = self.info.get_grain_nutrition_price()
         
         layout = BoxLayout(orientation='vertical', padding=40, spacing=20, size_hint_y=None)
         layout.bind(minimum_height=layout.setter('height'))
@@ -168,6 +168,10 @@ class FeedingScreen(Screen):
             quantity = int(self.quantity_input.text)
             grain_price = int(self.grain_price_input.text)
             nutrition_price = int(self.nutrition_price_input.text)
+            
+            if grain_price != self.grain_price or nutrition_price != self.nutrition_price:
+                self.info.save_new_prices(grain_price, nutrition_price)
+
             food_type = self.food_type_spinner.text
             date = self.selected_date
             if quantity and grain_price and date and nutrition_price and food_type and quantity != 0 and grain_price != 0 and nutrition_price != 0:
@@ -187,11 +191,12 @@ class FeedingScreen(Screen):
                 #     item = {"quantity":new_quantity, "price":new_price}
                 # Saving logic
                 item = {
+                    "date": date,
                     "quantity": quantity,
                     "price": price,
                     "food_type": food_type
                 }
-                self.storage.add_item(date, "feed_data", item)
+                self.storage.add_item(self.storage.generate_short_id(), "feed_data", item)
 
             self.display_message("Sikeres művelet!", success=True)
             Clock.schedule_once(lambda dt: self.go_back(None), 1)

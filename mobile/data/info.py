@@ -1,4 +1,5 @@
 from kivy.storage.jsonstore import JsonStore
+import numpy as np
 
 class Information:
     def __init__(self):
@@ -23,9 +24,16 @@ class Information:
                 raise Exception("Nagyobb a megadott érték mint az állományban lévő állatok száma!")
     
     def get_grain_nutrition_price(self) -> tuple:
-        grain_price = self.info["prices"].get("grain_price", 0)
-        nutrition_price = self.info["prices"].get("nutrition_price", 0)
-        if 0 in [grain_price, nutrition_price]:
-            return (0, 0)
+        if self.info.exists("prices"):
+            grain_price = self.info["prices"]["data"].get("grain_price", np.nan)
+            nutrition_price = self.info["prices"]["data"].get("nutrition_price", np.nan)
+            if np.nan in [grain_price, nutrition_price]:
+                return 0, 0
         
-        return (grain_price, nutrition_price)
+            return grain_price, nutrition_price
+        
+        return 0, 0
+    
+    def save_new_prices(self, grain, nutrition):
+        new = {"grain_price": grain, "nutrition_price": nutrition }
+        self.info.put("prices", data=new)

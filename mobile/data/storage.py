@@ -1,4 +1,5 @@
 from kivy.storage.jsonstore import JsonStore
+import uuid
 
 class Storage():
     def __init__(self):
@@ -21,3 +22,6 @@ class Storage():
     
     def list(self):
         pass
+    
+    def generate_short_id(self):
+        return str(uuid.uuid4())[:10]
