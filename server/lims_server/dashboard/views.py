@@ -5,7 +5,7 @@ import json
 import plotly.graph_objects as go
 from plotly.io import to_json
 from django.db import transaction
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.db.models import Q
 
 from .models import (
@@ -128,37 +128,108 @@ def income_view(request):
 
 def care_view(request):
     years = get_available_years()
+    months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     
-    return render(request, 'dashboard/care.html', {'years': years})
+    print(f"available months {months}")
+    
+    return render(request, 'dashboard/care.html', {'years': years, 'months': months})
 
 @csrf_exempt
 def get_hatch_data_chart(request):
     body = json.loads(request.body)
     years = body.get('years', [])
-    data = (
-        HatchData.objects.filter(date__year__in=years)
+    months = body.get('months', [])
+
+    # Filter data by years and months
+    hatch_data = (
+        HatchData.objects.filter(
+            date__year__in=years,
+            date__month__in=months
+        )
         .values('date', 'quantity')
         .annotate(year=ExtractYear('date'))
         .order_by('date')
     )
-
-    # quantities = [record for record in data]
-    # print(quantities)
     
-    dates = [record['date'] for record in data]
-    quantities = [record['quantity'] for record in data]
+    # Query DeathRecord
+    death_data = (
+        DeathRecord.objects.filter(
+            date__year__in=years,
+            date__month__in=months
+        )
+        .values('date', 'quantity')
+        .annotate(year=ExtractYear('date'))
+        .order_by('date')
+    )
+    
+    consume_data = (
+        ConsumeRecord.objects.filter(
+            date__year__in=years,
+            date__month__in=months
+        )
+        .values('date', 'quantity')
+        .annotate(year=ExtractYear('date'))
+        .order_by('date')
+    )
+    
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=dates, y=quantities, mode='lines+markers', name='Hatches'))
+    hatch_dates = [record['date'] for record in hatch_data]
+    hatch_quantities = [record['quantity'] for record in hatch_data]
 
-    fig.update_layout(
-        title="Hatches Over Selected Years",
+    death_dates = [record['date'] for record in death_data]
+    death_quantities = [record['quantity'] for record in death_data]
+    
+    consume_dates = [record['date'] for record in consume_data]
+    consume_quantities = [record['quantity'] for record in consume_data]
+
+    fig_hatch = go.Figure()
+    fig_hatch.add_trace(go.Scatter(x=hatch_dates, y=hatch_quantities, mode='lines+markers', name='Hatches'))
+
+    fig_hatch.update_layout(
+        title="Hatches Over Selected Years and Months",
         xaxis_title="Date",
         yaxis_title="Quantity",
-        template="plotly_white",
+        template="plotly",
+    )
+    
+    fig_death = go.Figure()
+    fig_death.add_trace(go.Scatter(x=death_dates, y=death_quantities, mode='lines+markers', name='Deaths'))
+    fig_death.add_trace(go.Scatter(x=consume_dates, y=consume_quantities, mode='lines+markers', name='Consumes'))
+    
+    fig_death.update_layout(
+        title="Halálozások és saját felhasználás az adott időszakban",
+        xaxis_title="Date",
+        yaxis_title="Quantity",
+        template="plotly",
     )
 
-    return JsonResponse(fig.to_dict())
+    total_hatches = sum(hatch_quantities)
+    total_deaths = sum(death_quantities)
+    total_consumes = sum(consume_quantities)
+
+    # Create pie chart
+    fig_pie = go.Figure()
+    fig_pie.add_trace(go.Pie(
+        labels=['Hatches', 'Deaths', 'Consumes'],
+        values=[total_hatches, total_deaths, total_consumes],
+        textinfo='label+percent',
+        hoverinfo='label+value'
+    ))
+
+    fig_pie.update_layout(
+        title="Proportions of Hatches, Deaths, and Consumes",
+        template="plotly",
+    )
+
+    # Prepare response
+    response_data = {
+        "hatch_chart": fig_hatch.to_dict(),
+        "death_chart": fig_death.to_dict(),
+        "pie_chart": fig_pie.to_dict()
+    }
+
+    return JsonResponse(response_data)
+
 
 
 def get_available_years():

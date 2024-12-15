@@ -7,5 +7,5 @@ urlpatterns = [
     path('incomes', income_view, name='incomes'),
     path('expenses', expenses_view, name='expenses'),
     path('care', care_view, name='care'),
-    path('get-hatch-chart/', get_hatch_data_chart, name='get_hatch_chart'),
+    path('get_hatch_data_chart/', get_hatch_data_chart, name='get_hatch_chart'),
 ]

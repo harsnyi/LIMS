@@ -1,14 +1,19 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Harsányi Farm</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light shadow">
+    <a class="navbar-brand font-weight-bold text-primary" href="#">Harsányi Farm</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" 
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'info' %}">Infó</a>
-            <a class="nav-item nav-link {% if request.path == '/incomes/' %}active{% endif %}" href="{% url 'incomes' %}">Bevétel</a>
-            <a class="nav-item nav-link {% if request.path == '/expenses/' %}active{% endif %}" href="{% url 'expenses' %}">Kiadás</a>
-            <a class="nav-item nav-link {% if request.path == '/care/' %}active{% endif %}" href="{% url 'care' %}">Gondozás</a>
+        <div class="navbar-nav ml-auto">
+            <a class="nav-item nav-link {% if request.path == '/' %}active{% endif %}" 
+               href="{% url 'info' %}">Infó</a>
+            <a class="nav-item nav-link {% if request.path == '/incomes/' %}active{% endif %}" 
+               href="{% url 'incomes' %}">Bevétel</a>
+            <a class="nav-item nav-link {% if request.path == '/expenses/' %}active{% endif %}" 
+               href="{% url 'expenses' %}">Kiadás</a>
+            <a class="nav-item nav-link {% if request.path == '/care/' %}active{% endif %}" 
+               href="{% url 'care' %}">Gondozás</a>
         </div>
     </div>
 </nav>

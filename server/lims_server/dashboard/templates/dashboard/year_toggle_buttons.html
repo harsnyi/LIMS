@@ -11,11 +11,27 @@
 </div>
 
 <script>
+    // Plotly empty figure initialization
+    const emptyFigure = {
+        data: [], // No data initially
+        layout: {
+            title: 'Select a Year to Display Data',
+            xaxis: { title: 'X-axis' },
+            yaxis: { title: 'Y-axis' },
+        }
+    };
+
+    // Render the empty plot when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        Plotly.newPlot('plotly-div', emptyFigure.data, emptyFigure.layout);
+    });
+
+    // Year toggle logic (your existing code here)
     document.querySelectorAll('.year-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
                 .map(checkbox => checkbox.value);
-    
+
             // Prepare the request
             fetch('http://localhost:8000/dashboard/get-hatch-chart/', {
                 method: 'POST',
@@ -31,27 +47,5 @@
             .catch(error => console.error('Error:', error));
         });
     });
-    
-    // Helper function to get CSRF token from the page's cookies
-    function getCSRFToken() {
-        const name = 'csrftoken';
-        const cookies = document.cookie.split(';');
-        for (const cookie of cookies) {
-            const [key, value] = cookie.trim().split('=');
-            if (key === name) return value;
-        }
-        return null;
-    }
-    
-    
-    function updateVisibleData(selectedYears) {
-        document.querySelectorAll('.year-data').forEach(element => {
-            const year = element.getAttribute('data-year');
-            if (selectedYears.includes(year)) {
-                element.style.display = 'block';
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
 </script>
+
