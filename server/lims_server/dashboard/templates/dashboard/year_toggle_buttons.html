@@ -1,0 +1,57 @@
+<div class="year-toggle-buttons">
+    
+        {% for year in years %}
+        <div class="form-check form-check-inline">
+            <input class="form-check-input year-checkbox" type="checkbox" id="year-{{ year }}" value="{{ year }}">
+            <label class="form-check-label" for="year-{{ year }}">{{ year }}</label>
+        </div>
+        {% endfor %}    
+    
+    
+</div>
+
+<script>
+    document.querySelectorAll('.year-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+    
+            // Prepare the request
+            fetch('http://localhost:8000/dashboard/get-hatch-chart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ years: selectedYears })
+            })
+            .then(response => response.json())
+            .then(data => {
+                Plotly.react('plotly-div', data.data, data.layout);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    
+    // Helper function to get CSRF token from the page's cookies
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const [key, value] = cookie.trim().split('=');
+            if (key === name) return value;
+        }
+        return null;
+    }
+    
+    
+    function updateVisibleData(selectedYears) {
+        document.querySelectorAll('.year-data').forEach(element => {
+            const year = element.getAttribute('data-year');
+            if (selectedYears.includes(year)) {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
+</script>

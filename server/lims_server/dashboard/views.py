@@ -5,6 +5,8 @@ import json
 import plotly.graph_objects as go
 from plotly.io import to_json
 from django.db import transaction
+from django.db.models.functions import ExtractYear
+from django.db.models import Q
 
 from .models import (
     FeedData,
@@ -109,12 +111,64 @@ def upload_data(request):
 
 
 def dashboard_view(request):
-    grid_items = list(range(1, 129))
-    # Create a simple Plotly figure
-    fig = go.Figure(data=go.Bar(y=[2, 3, 1, 5], x=["A", "B", "C", "D"]))
-    plotly_figure = to_json(fig)  # Serialize Plotly figure to JSON
+    years = get_available_years()
+    
+    return render(request, 'dashboard/dashboard.html', {'years': years})
+    
+    
+def expenses_view(request):
+    years = get_available_years()
+    
+    return render(request, 'dashboard/expenses.html', {'years': years})
 
-    return render(request, 'dashboard/dashboard.html', {
-        'grid_items': grid_items,
-        'plotly_figure': plotly_figure
-    })
+def income_view(request):
+    years = get_available_years()
+    
+    return render(request, 'dashboard/incomes.html', {'years': years})
+
+def care_view(request):
+    years = get_available_years()
+    
+    return render(request, 'dashboard/care.html', {'years': years})
+
+@csrf_exempt
+def get_hatch_data_chart(request):
+    body = json.loads(request.body)
+    years = body.get('years', [])
+    data = (
+        HatchData.objects.filter(date__year__in=years)
+        .values('date', 'quantity')
+        .annotate(year=ExtractYear('date'))
+        .order_by('date')
+    )
+
+    # quantities = [record for record in data]
+    # print(quantities)
+    
+    dates = [record['date'] for record in data]
+    quantities = [record['quantity'] for record in data]
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=dates, y=quantities, mode='lines+markers', name='Hatches'))
+
+    fig.update_layout(
+        title="Hatches Over Selected Years",
+        xaxis_title="Date",
+        yaxis_title="Quantity",
+        template="plotly_white",
+    )
+
+    return JsonResponse(fig.to_dict())
+
+
+def get_available_years():
+    years = set()
+
+    models = [ConsumeRecord, DeathRecord, EggSale, FeedData, HatchData, OtherExpenses, Sales]
+
+    for model in models:
+        years.update(
+            model.objects.annotate(year=ExtractYear('date')).values_list('year', flat=True).distinct()
+        )
+
+    return sorted(years, reverse=True)

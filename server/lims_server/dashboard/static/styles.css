@@ -5,23 +5,17 @@
 }
 
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
 }
 
 .wrapper {
-    width: 95%;
-    min-height: 95vh;
+    margin: 70px auto 0;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
     grid-auto-rows: minmax(100px, auto);
     background-color: antiquewhite;
-    
 }
 
 .one {
@@ -54,3 +48,4 @@ body {
     grid-column: 3;
     grid-row: 4;
 }
+
