@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from data.storage import Storage
+from data.info import Information
 import requests
 import json
 
@@ -12,6 +13,7 @@ class DataScreen(Screen):
     def __init__(self, storage, counter, **kwargs):
         super().__init__(**kwargs)
         self.storage: Storage = storage
+        self.counter: Information = counter
         self.layout = BoxLayout(orientation='vertical', padding=40, spacing=20)
 
         label = Label(
@@ -66,14 +68,27 @@ class DataScreen(Screen):
 
     def send_data(self, instance):
         # Define your API endpoint
-        url = "http://localhost:8000/dashboard/upload_data"
+        upload_stock_url = "http://localhost:8000/dashboard/upload_stock"
+        upload_data_url = "http://localhost:8000/dashboard/upload_data"
+        
+        stock = self.counter.info._data
+        try:
+            response = requests.post(upload_stock_url, data=json.dumps(stock), headers={'Content-Type': 'application/json'})
+            
+            # Check if the request was successful
+            if response.status_code == 201:
+                print("Stock sent successfully!")
+            else:
+                print(f"Failed to send stock. Status code: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending stock: {e}")
         
         
         data = self.storage.data._data
         print(data)
         # Send POST request
         try:
-            response = requests.post(url, data=json.dumps(data), headers={'Content-Type': 'application/json'})
+            response = requests.post(upload_data_url, data=json.dumps(data), headers={'Content-Type': 'application/json'})
             
             # Check if the request was successful
             if response.status_code == 201:

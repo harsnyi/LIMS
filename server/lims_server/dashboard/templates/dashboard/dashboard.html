@@ -6,32 +6,100 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <title>info</title>
+    <title>Gondozás</title>
 </head>
 <body>
     
-    <div class="container-fluid">
+    <div id="content" class="container-fluid">
         {% include 'dashboard/navbar.html' %}
 
-        {% include 'dashboard/year_toggle_buttons.html' %}
+        <div class="year-toggle-buttons mb-3">
+            <span id="select_text">Válassz évet:</span>
+            {% for year in years %}
+            <div class="form-check form-check-inline">
+                <input class="form-check-input year-checkbox" type="checkbox" id="year-{{ year }}" value="{{ year }}">
+                <label class="form-check-label" for="year-{{ year }}">{{ year }}</label>
+            </div>
+            {% endfor %}
+        </div>
         
         <div class="wrapper">
-            <div class="one">
-                <div id="plotly-div" class="grid-item plotly-item"></div>
+            <div class="info_income_chart_div">
+                <div id="income-chart"></div>
             </div>
-            <div class="two">Two</div>
-            <div class="three">Three</div>
-            <div class="four">Four</div>
-            <div class="five">Five</div>
-            <div class="six">Six</div>
+
+            <div class="info_data_div"></div>
+            <div class="info_expenditure_chart_div">
+                <div id="expenditure-chart"></div>
+            </div>
+            <div class="info_stock_chart_div">
+                <div id="stock-chart"></div>
+                
+            </div>
+            
+            
+
         </div>
     </div>
 
     <script>
-        // Plotly graph setup
-        const plotlyFigure = {{ plotly_figure|safe }};
-        Plotly.newPlot('plotly-div', plotlyFigure.data, plotlyFigure.layout);
+        document.addEventListener('DOMContentLoaded', () => {
+            Plotly.newPlot('income-chart', [], {
+                title: 'Sell Chart',
+                paper_bgcolor: '#A6CFA0',
+            });
+            Plotly.newPlot('expenditure-chart', [], {
+                title: 'Expenditure Chart',
+                paper_bgcolor: '#A6CFA0',
+            });
+            Plotly.newPlot('stock-chart', [], {
+                title: 'Stock Chart',
+                paper_bgcolor: '#A6CFA0',
+            });
+            
+            function updatePlots() {
+                const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
+                    .map(checkbox => checkbox.value);
+                fetch('http://localhost:8000/dashboard/get_info_data/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ years: selectedYears })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const { data: sellData, layout: sellLayout } = data.income_chart;
+                    const { data: expenseData, layout: expenseLayout } = data.expenditure_chart;
+                    const { data: stockData, layout: stockLayout } = data.stock_chart;
+
+                    sellLayout.paper_bgcolor = '#A6CFA0';
+                    expenseLayout.paper_bgcolor = '#A6CFA0';
+                    stockLayout.paper_bgcolor = '#A6CFA0';
+
+
+                    Plotly.react('income-chart', sellData, sellLayout);
+                    Plotly.react('expenditure-chart', expenseData, expenseLayout);
+                    Plotly.react('stock-chart', stockData, stockLayout);
+
+                    const totalValuesDiv = document.querySelector('.info_data_div');
+                    totalValuesDiv.innerHTML = `
+                        <span>Bevétel: ${data.total_income} Ft</span><br>
+                        <span>Kiadás : ${data.total_expenditure} Ft</span><br>
+                    `;
+                    
+                })
+                .catch(error => console.error('Error:', error));
+            }
+            
+        
+            document.querySelectorAll('.year-checkbox, .month-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updatePlots);
+            });
+        });
     </script>
+    
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

@@ -54,6 +54,22 @@ class EggSale(models.Model):
     def __str__(self):
         return f"{self.quantity} eggs sold on {self.date} for {self.price} currency units"
 
+class Stock(models.Model):
+    quantity = models.PositiveIntegerField()
+    date = models.DateField()
+    
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    class Meta:
+        ordering = ['-date']
+
+    def __str__(self):
+        return f"{self.quantity} animals in stock on {self.date}"
 
 class FeedData(models.Model):
     FOOD_TYPE_CHOICES = [

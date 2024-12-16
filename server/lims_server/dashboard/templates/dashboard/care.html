@@ -36,17 +36,21 @@
     
 
         <div class="wrapper">
-            <div class="one">
+            <div class="hatches_div">
                 <div id="hatch-chart"></div>
             </div>
-            <div class="two">
+            <div class="nursing_pie_div">
                 <div id="pie-chart"></div>
             </div>
-            <div class="three">
+            <div class="nursing_death_div">
                 <div id="death-chart"></div>
             </div>
-            <div class="four">
-                <div></div>
+            <div class="nursing_data_div">
+                <div>
+                    <span>Összes elhalálozás:</span><br>
+                    <span>Összes saját felhasználás:</span><br>
+                    <span>Összes keltetés:</span><br>
+                </div>
             </div>
 
         </div>
@@ -56,18 +60,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             Plotly.newPlot('hatch-chart', [], {
                 title: 'Hatch Chart',
-                paper_bgcolor: '#6F8695',  // Change paper background to black
+                paper_bgcolor: '#A6CFA0',
             });
             
             Plotly.newPlot('death-chart', [], {
                 title: 'Death Chart',
-                paper_bgcolor: '#6F8695',
+                paper_bgcolor: '#A6CFA0',
             });
             
             Plotly.newPlot('pie-chart', [], {
                 title: 'Pie Chart',
-                paper_bgcolor: '#6F8695',
+                paper_bgcolor: '#A6CFA0',
             });
+
             function updatePlots() {
                 const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
                     .map(checkbox => checkbox.value);
@@ -94,6 +99,14 @@
                     Plotly.react('hatch-chart', hatchData, hatchLayout);
                     Plotly.react('death-chart', deathData, deathLayout);
                     Plotly.react('pie-chart', pieData, pieLayout);
+                    
+                    const totalValuesDiv = document.querySelector('.nursing_data_div');
+                    totalValuesDiv.innerHTML = `
+                        <span>Összes elhalálozás: ${data.total_deaths}</span><br>
+                        <span>Összes saját felhasználás: ${data.total_consumes}</span><br>
+                        <span>Összes keltetés: ${data.total_hatches}</span>
+                    `;
+
                 })
                 .catch(error => console.error('Error:', error));
             }

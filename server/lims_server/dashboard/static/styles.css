@@ -23,7 +23,7 @@ body {
     background-color: #A6CFA0;
 }
 
-.one {
+.hatches_div {
     grid-column: 1 / 4;
     grid-row: 1;
     margin-top: 1%;
@@ -32,7 +32,7 @@ body {
     
 }
 
-.two {
+.nursing_pie_div {
     grid-column: 1 / 3;
     grid-row: 2;
     margin-top: 4%;
@@ -40,7 +40,7 @@ body {
     border: 2px solid #0F1B0E;
 }
 
-.three {
+.nursing_death_div {
     grid-column: 3 / 6;
     grid-row: 2;
     margin-top: auto;
@@ -49,7 +49,7 @@ body {
     
 }
 
-.four {
+.nursing_data_div {
     grid-column: 4 / 6;
     grid-row: 1;
     margin-top: 1.5%;
@@ -57,19 +57,117 @@ body {
     border: 2px solid #0F1B0E;
     height: auto;
 }
-
-.five {
-    grid-column: 2;
-    grid-row: 4;
+.nursing_data_div, .expense_data_div, .income_data_div, .info_data_div span {
+    padding: 3%;
+    color: #0F1B0E;
+    font-size: 20px;
+    line-height: 2;
 }
 
-.six {
-    grid-column: 3;
-    grid-row: 4;
+.expense_data_div {
+    grid-column: 1 / 2;
+    grid-row: 1;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.feed_div{
+    grid-column: 2 / 6;
+    grid-row: 1;
+    margin-top: 1.5%;
+    margin-left: 4%;
+    border: 2px solid #0F1B0E;
+}
+
+.food_type_pie_div {
+    grid-column: 4 / 6;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.expenses_type_pie_div {
+    grid-column: 2 / 4;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.boxplot_div {
+    grid-column: 1 / 2;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.sell_chart_div {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    margin-top: 1%;
+    margin-left: 1%;
+    border: 2px solid #0F1B0E;
+}
+
+.income_data_div {
+    grid-column: 5 / 6;
+    grid-row: 1;
+    margin-top: 1.5%;
+    margin-left: 4%;
+    border: 2px solid #0F1B0E;
+}
+
+.heatmap_chart_div {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.sell_hist_div {
+    grid-column: 3 / 6;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+
+.info_income_chart_div {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    margin-top: 1%;
+    margin-left: 1%;
+    border: 2px solid #0F1B0E;
+}
+.info_expenditure_chart_div {
+    grid-column: 3 / 6;
+    grid-row: 2;
+    margin-top: 1.5%;
+    margin-left: 4%;
+    border: 2px solid #0F1B0E;
+}
+
+.info_data_div {
+    grid-column: 5 / 6;
+    grid-row: 1;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
+}
+.info_stock_chart_div {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    margin-top: 4%;
+    margin-left: 1.5%;
+    border: 2px solid #0F1B0E;
 }
 
 #select_text{
-    color: #F2DD6E;
+    color: #0F1B0E;
     font-size: 18px;
     font-weight: bold;
     line-height: 2;

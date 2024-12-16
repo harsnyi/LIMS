@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ConsumeRecord, DeathRecord, EggSale, FeedData, HatchData, OtherExpenses, Sales
+from .models import ConsumeRecord, DeathRecord, EggSale, FeedData, HatchData, OtherExpenses, Sales, Stock
 
 @admin.register(ConsumeRecord)
 class ConsumeRecordAdmin(admin.ModelAdmin):
@@ -42,3 +42,9 @@ class SalesAdmin(admin.ModelAdmin):
     list_display = ('date', 'quantity', 'kilograms', 'price', 'created_at', 'updated_at')
     list_filter = ('date',)
     search_fields = ('quantity', 'price')
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    list_display = ('date', 'quantity', 'created_at', 'updated_at')
+    list_filter = ('date',)
+    search_fields = ('quantity',)
