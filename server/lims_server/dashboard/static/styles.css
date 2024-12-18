@@ -10,17 +10,18 @@ body {
 }
 
 #content{
-    background-color: #A6CFA0;
+    background-color: #8DC185;
 }
 
 #nav {
     width: 100%;
 }
+
 .wrapper {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-auto-rows: minmax(100px, auto);
-    background-color: #A6CFA0;
+    background-color: #8DC185;
 }
 
 .hatches_div {
@@ -35,7 +36,7 @@ body {
 .nursing_pie_div {
     grid-column: 1 / 3;
     grid-row: 2;
-    margin-top: 4%;
+    margin-top: 1.5%;
     margin-left: 1.5%;
     border: 2px solid #0F1B0E;
 }
@@ -43,17 +44,18 @@ body {
 .nursing_death_div {
     grid-column: 3 / 6;
     grid-row: 2;
-    margin-top: auto;
-    margin-left: 4%;
+    margin-top: 1.1%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
     
 }
 
 .nursing_data_div {
+    background-color: #A6CFA0;
     grid-column: 4 / 6;
     grid-row: 1;
     margin-top: 1.5%;
-    margin-left: 4%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
     height: auto;
 }
@@ -65,34 +67,35 @@ body {
 }
 
 .expense_data_div {
-    grid-column: 1 / 2;
+    background-color: #A6CFA0;
+    grid-column: 1 / 3;
     grid-row: 1;
-    margin-top: 4%;
-    margin-left: 1.5%;
+    margin-top: 1.5%;
+    margin-left: 1.0%;
     border: 2px solid #0F1B0E;
 }
 
 .feed_div{
-    grid-column: 2 / 6;
+    grid-column: 3 / 6;
     grid-row: 1;
-    margin-top: 1.5%;
-    margin-left: 4%;
+    margin-top: 1%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
 }
 
 .food_type_pie_div {
     grid-column: 4 / 6;
     grid-row: 2;
-    margin-top: 4%;
-    margin-left: 1.5%;
+    margin-top: 2%;
+    margin-left: 0.5%;
     border: 2px solid #0F1B0E;
 }
 
 .expenses_type_pie_div {
     grid-column: 2 / 4;
     grid-row: 2;
-    margin-top: 4%;
-    margin-left: 1.5%;
+    margin-top: 2%;
+    margin-left: 0.5%;
     border: 2px solid #0F1B0E;
 }
 
@@ -100,12 +103,12 @@ body {
     grid-column: 1 / 2;
     grid-row: 2;
     margin-top: 4%;
-    margin-left: 1.5%;
+    margin-left: 1.8%;
     border: 2px solid #0F1B0E;
 }
 
 .sell_chart_div {
-    grid-column: 1 / 5;
+    grid-column: 1 / 4;
     grid-row: 1;
     margin-top: 1%;
     margin-left: 1%;
@@ -113,17 +116,18 @@ body {
 }
 
 .income_data_div {
-    grid-column: 5 / 6;
+    background-color: #A6CFA0;
+    grid-column: 4 / 6;
     grid-row: 1;
     margin-top: 1.5%;
-    margin-left: 4%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
 }
 
 .heatmap_chart_div {
     grid-column: 1 / 3;
     grid-row: 2;
-    margin-top: 4%;
+    margin-top: 2%;
     margin-left: 1.5%;
     border: 2px solid #0F1B0E;
 }
@@ -131,8 +135,8 @@ body {
 .sell_hist_div {
     grid-column: 3 / 6;
     grid-row: 2;
-    margin-top: 4%;
-    margin-left: 1.5%;
+    margin-top: 1.4%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
 }
 
@@ -146,12 +150,13 @@ body {
 .info_expenditure_chart_div {
     grid-column: 3 / 6;
     grid-row: 2;
-    margin-top: 1.5%;
-    margin-left: 4%;
+    margin-top: 1.3%;
+    margin-left: 1%;
     border: 2px solid #0F1B0E;
 }
 
 .info_data_div {
+    background-color: #A6CFA0;
     grid-column: 5 / 6;
     grid-row: 1;
     margin-top: 4%;
@@ -161,8 +166,8 @@ body {
 .info_stock_chart_div {
     grid-column: 1 / 3;
     grid-row: 2;
-    margin-top: 4%;
-    margin-left: 1.5%;
+    margin-top: 2%;
+    margin-left: 1.8%;
     border: 2px solid #0F1B0E;
 }
 
@@ -221,4 +226,23 @@ body {
 .month-toggle-buttons .form-check-active {
     background-color: #007bff;
     color: #fff;
+}
+
+.custom-nav-item {
+    font-size: 1.0rem;
+    padding: 0.75rem 1.0rem;
+    letter-spacing: 0.05em;
+    border: 2px solid #0F1B0E;
+    background-color: #67AD5C;
+}
+
+
+.custom-nav-item:hover,
+.custom-nav-item.active {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.navbar-nav .nav-item {
+    margin-right: 15px;
 }

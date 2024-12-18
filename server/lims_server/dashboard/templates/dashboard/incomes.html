@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <title>Gondozás</title>
+    <title>Bevétel</title>
 </head>
 <body>
     
@@ -14,7 +14,7 @@
         {% include 'dashboard/navbar.html' %}
 
         <div class="year-toggle-buttons mb-3">
-            <span id="select_text">Válassz évet:</span>
+            <span id="select_text">Év:</span>
             {% for year in years %}
             <div class="form-check form-check-inline">
                 <input class="form-check-input year-checkbox" type="checkbox" id="year-{{ year }}" value="{{ year }}">
@@ -24,7 +24,7 @@
         </div>
         
         <div class="month-toggle-buttons mb-3">
-            <span id="select_text">Válassz hónapot:</span>
+            <span id="select_text">Hónap:</span>
             {% for month in months %}
             <div class="form-check form-check-inline">
                 <input class="form-check-input month-checkbox" type="checkbox" id="month-{{ month }}" value="{{ month }}">
@@ -78,7 +78,9 @@
                 const selectedMonths = Array.from(document.querySelectorAll('.month-checkbox:checked'))
                     .map(checkbox => checkbox.value);
         
-                fetch('http://localhost:8000/dashboard/get_income_data/', {
+                const staticIp = "{{ static_ip|escapejs }}";
+                const url = `http://${staticIp}:8000/dashboard/get_income_data/`;
+                fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
